@@ -1,46 +1,32 @@
 open Belt;
 
-let filterOne = set =>
-  set
-  |. Belt.Set.keepU((. i: Item.t) =>
-       if (i.txId
-           == "35815aaadec8a110391de8ae2e8c304e3e6084d3cd1344d8155a2293ee54324b"
-           ||
-           i.txId == "d029a186f3d3124aca7fdc95d085ce25e0519918bf63ecb32cdfbb1da3268d8c") {
-         false;
-       } else {
-         true;
-       }
-     );
+let itemsArray = [|
+  "514ec6088ef79a9c56b1530b6d0e1a47fc5e61ab74993861e315d1430de2c407",
+  "eb782bdb77cb3ceb1efe2d7179104bb903a3c1bb83202e207e00438519aacb8b",
+  "26b6ddad37f9edc4ceebb8f1384fea5f62fdad3caf5f3a6bfc6e8b6bc461aea9",
+  "7ea4150658f6830482f6cef7be7441474fa7faa8fc99b7c86ff1a62a33543819",
+  "1fd8d28743b218ee09297a923f328574e880955a45f5c35b4a2fba72b29e7439",
+  "7e25c3b8399b3ff24c1ba48e0c6e45e19cc8b43d5128616ad689220187194b14",
+  "2674d7197f331f08ddc2c7b9c68618d935ec58ec314da018e8ce997020f444c0",
+  "91872071cc235570efeb149d09c161c8f378ddd3e7f344363ac8fe0ad2c5d30a",
+  "124ca66f71479a5bec64727e04d43d5d3bf390fa1fa1a4d880c1ef07125bcef8",
+  "e0c750a6bf90fe2036d10377852330b704026ce782d89bd17b18337f2de945a1",
+  "b0478fed46339ffd2d0d36b0355d782be269b0452f452d7532b8f6e1dfa8e06b",
+  "b54f5481e48af0cf20700aceccb03c634b8e884e56f4f7def798014a1da07abc",
+  "773cbcba2d34cf2504b0ec581656fd0da30261df98629731dd78c3d816d5ec24",
+  "7e12e0eec5a379cea826734be1248050229903c1267333f743e1d9db9508905a",
+  "d029a186f3d3124aca7fdc95d085ce25e0519918bf63ecb32cdfbb1da3268d8c",
+  "35815aaadec8a110391de8ae2e8c304e3e6084d3cd1344d8155a2293ee54324b",
+  "aa4d81f03aaeb5980ea273cf50238f688bb6448943ff6ce875e98adb0a4f75c8",
+  "7ac21a22271c24d930f56023f0a7d6b8ecafd809726a73f8fbdfd0b749cde3b8",
+  "b724db70e7822af0d5e1f60676b5eead33d7a38a9b1ab5659e15120573c0c894",
+|];
 
-let text = ReasonReact.string;
-
-let unused = Item.itemsArray |> Set.mergeMany(Item.itemSet());
-
-let filteredUnused = filterOne(unused);
-
-let filterTwo = ({txId}: Item.t) =>
-  txId != "514ec6088ef79a9c56b1530b6d0e1a47fc5e61ab74993861e315d1430de2c407";
-
-let unusedAfter = unused |. Belt.Set.keep(filterTwo);
-
-let countInputs = set =>
-  set
-  |> Set.toArray
-  |. Array.reduce(0, (res, {txId}: Item.t) =>
+let unusedAfter =
+  Set.String.fromArray(itemsArray)
+  |. Set.String.keep(txId =>
        txId
-       == "b0478fed46339ffd2d0d36b0355d782be269b0452f452d7532b8f6e1dfa8e06b" ?
-         res + 1 : res
+       !== "514ec6088ef79a9c56b1530b6d0e1a47fc5e61ab74993861e315d1430de2c407"
      );
 
-ReactDOMRe.renderToElementWithId(
-  text(
-    "This number should be '1' if you are running the production build you will see something else! ->"
-    ++ string_of_int(countInputs(unusedAfter))
-    ++ (
-      countInputs(unusedAfter) != 1 ?
-        "<- THATS NOT GOOD!!!!" : "<- Looks like all is well"
-    ),
-  ),
-  "root",
-);
+Js.log2("i", Set.String.toArray(unusedAfter));
